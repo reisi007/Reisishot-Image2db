@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "at.reisisoft"
-version = "1.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 
 buildscript {
     var kotlin_version: String by extra

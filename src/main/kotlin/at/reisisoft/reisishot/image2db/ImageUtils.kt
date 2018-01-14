@@ -25,7 +25,7 @@ object ImageUtils {
             val imageList = DbImageSet()
 
             override fun preVisitDirectory(dir: Path, attrs: BasicFileAttributes): FileVisitResult {
-                if (dir.fileName.startsWith("."))
+                if (dir.fileName.toString().startsWith("."))
                     return FileVisitResult.SKIP_SUBTREE
                 println("Started processing ${path.relativize(dir)}")
                 return FileVisitResult.CONTINUE
