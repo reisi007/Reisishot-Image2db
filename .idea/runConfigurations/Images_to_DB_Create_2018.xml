@@ -3,7 +3,7 @@
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="at.reisisoft.reisishot.image2db.CLI" />
     <option name="VM_PARAMETERS" value="" />
-    <option name="PROGRAM_PARAMETERS" value="--create --path &quot;D:\_Files\Amazon Drive\Pictures\2018&quot; --db &quot;D:\Desktop\images2018.sqlite&quot;" />
+    <option name="PROGRAM_PARAMETERS" value="--create --path &quot;D:\_Files\Amazon Drive\Pictures\2018&quot; --path &quot;D:\_Files\Amazon Drive\Pictures\2017&quot; --db &quot;D:\Desktop\images2018.sqlite&quot;" />
     <option name="WORKING_DIRECTORY" value="" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />

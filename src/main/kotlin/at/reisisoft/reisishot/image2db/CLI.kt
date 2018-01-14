@@ -55,7 +55,7 @@ object CLI {
                 DataBaseUtils.useDatabase(databaseLocation) { connection ->
                     val cameraModels = DataBaseUtils.getCameraModels(connection)
 
-                    connection.prepareStatement("INSERT OR IGNORE INTO Image(fileName,camera,iso,av,tv,lens,date) VALUES (?,?,?,?,?,?,?)").use { persistImage ->
+                    connection.prepareStatement("INSERT OR IGNORE INTO Image(fileName,height,width,camera,iso,av,tv,tv_real,lens,date,focalLength) VALUES (?,?,?,?,?,?,?,?,?,?,?)").use { persistImage ->
                         connection.prepareStatement("INSERT OR IGNORE INTO Camera(id,manufacturer,model,cropfactor) VALUES (?,?,?,?)").use { persistCameras ->
                             val images = rootImagePaths.parallelStream().flatMap { ImageUtils.findImages(it, cameraModels).stream() }.checkpoint(false) {
                                 //Persist camera
@@ -71,16 +71,22 @@ object CLI {
 
                             }.peek { image ->
                                 persistImage.setString(1, image.fileName)
-                                persistImage.setInt(2, image.camera.id)
-                                persistImage.setInt(3, image.iso)
-                                persistImage.setBigDecimal(4, image.av)
-                                persistImage.setBigDecimal(5, image.tv)
-                                persistImage.setString(6, image.lens)
-                                persistImage.setDate(7, image.date)
+                                persistImage.setInt(2, image.height)
+                                persistImage.setInt(3, image.width)
+                                persistImage.setInt(4, image.camera.id)
+                                persistImage.setInt(5, image.iso)
+                                persistImage.setBigDecimal(6, image.av)
+                                persistImage.setString(7, image.tv)
+                                persistImage.setString(8, image.tv)
+                                persistImage.setString(9, image.lens)
+                                persistImage.setDate(10, image.date)
+                                persistImage.setInt(11, image.focalLength)
                                 persistImage.addBatch()
                             }.count()
+                            println("$images processed in total!")
+                            println("Persisting images! This might take a while!")
                             val dbImages = persistImage.executeBatch().sum()
-                            println("$images processed in total, $dbImages new images found!")
+                            println("$dbImages new images found!")
                         }
                     }
                 }

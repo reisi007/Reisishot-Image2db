@@ -6,13 +6,17 @@ CREATE TABLE Camera (
   UNIQUE (manufacturer, model)
 );
 CREATE TABLE Image (
-  id       INTEGER PRIMARY KEY AUTOINCREMENT,
-  fileName TEXT    NOT NULL,
-  camera   INTEGER REFERENCES Camera (id),
-  iso      INTEGER NOT NULL,
-  av       REAL    NOT NULL,
-  tv       REAL    NOT NULL,
-  lens     TEXT,
-  date     INTEGER NOT NULL,
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  height      INTEGER NOT NULL,
+  width       INTEGER NOT NULL,
+  fileName    TEXT    NOT NULL,
+  focalLength INTEGER NOT NULL,
+  camera      INTEGER REFERENCES Camera (id),
+  iso         INTEGER NOT NULL,
+  av          REAL    NOT NULL,
+  tv          TEXT    NOT NULL,
+  tv_real     REAL    NOT NULL,
+  lens        TEXT,
+  date        INTEGER NOT NULL,
   UNIQUE (fileName, date)
 );

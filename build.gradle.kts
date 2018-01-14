@@ -39,7 +39,10 @@ configure<ApplicationPluginConvention> {
 dependencies {
     //SQLite
     compile("org.xerial", "sqlite-jdbc", "3.20+")
+    // Kotlin Argparer
     compile("com.xenomachina", "kotlin-argparser", "2.0+")
+    // https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
+    compile("com.drewnoakes", "metadata-extractor", "2.11+")
     compile(kotlinModule("stdlib-jdk8", kotlin_version))
 }
 
