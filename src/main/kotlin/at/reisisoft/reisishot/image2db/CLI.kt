@@ -55,7 +55,7 @@ object CLI {
                 DataBaseUtils.useDatabase(databaseLocation) { connection ->
                     val cameraModels = DataBaseUtils.getCameraModels(connection)
 
-                    connection.prepareStatement("INSERT OR IGNORE INTO Image(fileName,height,width,camera,iso,av,tv,tv_real,lens,date,focalLength) VALUES (?,?,?,?,?,?,?,?,?,?,?)").use { persistImage ->
+                    connection.prepareStatement("INSERT OR IGNORE INTO Image(fileName,height,width,camera,iso,av,tv,tv_real,lens,captureDate,focalLength) VALUES (?,?,?,?,?,?,?,?,?,?,?)").use { persistImage ->
                         connection.prepareStatement("INSERT OR IGNORE INTO Camera(id,manufacturer,model,cropfactor) VALUES (?,?,?,?)").use { persistCameras ->
                             val images = rootImagePaths.parallelStream().flatMap { ImageUtils.findImages(it, cameraModels).stream() }.checkpoint(false) {
                                 //Persist camera
