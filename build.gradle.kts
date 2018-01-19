@@ -34,6 +34,7 @@ repositories {
 configure<ApplicationPluginConvention> {
     mainClassName = "at.reisisoft.reisishot.image2db.CLI"
     applicationName = "Reisishot Image 2 DB"
+    applicationDefaultJvmArgs = listOf("-ea", "-Xss1024m", "-Xmx8g")
 }
 
 dependencies {
