@@ -12,14 +12,18 @@ object DataBaseUtils {
     fun createDatabase(path: Path) {
 
 
-        val sqlDdlText = BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/createDb.ddl.sql"))).useLines { it.joinToString(" ") }
+        val sqlDdlText =
+            BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/createDb.ddl.sql"))).useLines {
+                it.joinToString(" ")
+            }
         val statements = sqlDdlText.split(";")
 
         Files.deleteIfExists(path)
 
         useDatabase(path) {
             it.createStatement().use { statement ->
-                val tableCount = statements.stream().sequential().filter { !it.isBlank() }.peek { statement.addBatch(it) }.count()
+                val tableCount =
+                    statements.stream().sequential().filter { !it.isBlank() }.peek { statement.addBatch(it) }.count()
                 statement.executeBatch()
                 println("Database created successfully! Number of tables $tableCount")
             }
@@ -27,7 +31,7 @@ object DataBaseUtils {
     }
 
     fun <T> useDatabase(path: Path, workerBlock: (Connection) -> T): T =
-            DriverManager.getConnection("jdbc:sqlite:${path.toAbsolutePath()}").use { workerBlock.invoke(it) }
+        DriverManager.getConnection("jdbc:sqlite:${path.toAbsolutePath()}").use { workerBlock.invoke(it) }
 
     fun getCameraModels(connection: Connection): DbCameraSet {
         val sql = "SELECT id, manufacturer,model,cropfactor FROM Camera"
@@ -36,8 +40,10 @@ object DataBaseUtils {
         connection.createStatement().use {
             it.executeQuery(sql).use {
                 while (it.next())
-                    set += DbCamera(it.getInt(1), it.getString(2),
-                            it.getString(3), it.getBigDecimal(4))
+                    set += DbCamera(
+                        it.getInt(1), it.getString(2),
+                        it.getString(3), it.getBigDecimal(4)
+                    )
             }
         }
         return set

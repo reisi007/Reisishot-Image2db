@@ -56,35 +56,49 @@ object ImageUtils {
     }
 
     private fun processImageFile(imageFile: Path, cameraModels: DbCameraSet): DbImage? =
-            ImageMetadataReader.readMetadata(imageFile.toFile()).let { metadata ->
-                metadata.getFirstDirectoryOfType(JpegDirectory::class.java).let { jpegDirectory ->
-                    metadata.getFirstDirectoryOfType(ExifIFD0Directory::class.java).let { exifIfd0Directory ->
-                        metadata.getFirstDirectoryOfType(ExifSubIFDDirectory::class.java).let { exifSubIfdDirectory ->
-                            metadata.getFirstDirectoryOfType(FileSystemDirectory::class.java).let { fileSystemDirectory ->
-                                try {
-                                    return DbImage(fileSystemDirectory.getFileName(), jpegDirectory.imageHeight, jpegDirectory.imageWidth,
-                                            cameraModels.getOrCreateCamera(exifIfd0Directory.getMake(), exifIfd0Directory.getModel()),
-                                            exifSubIfdDirectory.getIso(), exifSubIfdDirectory.getAv(), exifSubIfdDirectory.getTv(),
-                                            exifSubIfdDirectory.getTvAsBigDecimal(), exifSubIfdDirectory.getLensModel(),
-                                            exifSubIfdDirectory.getFocalLength(), java.sql.Date(exifSubIfdDirectory.dateOriginal.time)
-                                    )
-                                } catch (e: RuntimeException) {
-                                    e.printStackTrace()
-                                    return null
-                                }
+        ImageMetadataReader.readMetadata(imageFile.toFile()).let { metadata ->
+            metadata.getFirstDirectoryOfType(JpegDirectory::class.java).let { jpegDirectory ->
+                metadata.getFirstDirectoryOfType(ExifIFD0Directory::class.java).let { exifIfd0Directory ->
+                    metadata.getFirstDirectoryOfType(ExifSubIFDDirectory::class.java).let { exifSubIfdDirectory ->
+                        metadata.getFirstDirectoryOfType(FileSystemDirectory::class.java).let { fileSystemDirectory ->
+                            try {
+                                return DbImage(
+                                    fileSystemDirectory.getFileName(),
+                                    jpegDirectory.imageHeight,
+                                    jpegDirectory.imageWidth,
+                                    cameraModels.getOrCreateCamera(
+                                        exifIfd0Directory.getMake(),
+                                        exifIfd0Directory.getModel()
+                                    ),
+                                    exifSubIfdDirectory.getIso(),
+                                    exifSubIfdDirectory.getAv(),
+                                    exifSubIfdDirectory.getTv(),
+                                    exifSubIfdDirectory.getTvAsBigDecimal(),
+                                    exifSubIfdDirectory.getLensModel(),
+                                    exifSubIfdDirectory.getFocalLength(),
+                                    java.sql.Date(exifSubIfdDirectory.dateOriginal.time)
+                                )
+                            } catch (e: RuntimeException) {
+                                e.printStackTrace()
+                                return null
                             }
                         }
                     }
                 }
             }
+        }
 
     private fun FileSystemDirectory.getFileName() = getString(1)
     private fun ExifIFD0Directory.getMake() = getString(271)
     private fun ExifIFD0Directory.getModel() = getString(272)
     private fun ExifSubIFDDirectory.getIso() = getString(34866).toInt()
-    private fun ExifSubIFDDirectory.getAv() = BigDecimal(getRational(33437).toDouble()).setScale(1, RoundingMode.HALF_UP)
+    private fun ExifSubIFDDirectory.getAv() =
+        BigDecimal(getRational(33437).toDouble()).setScale(1, RoundingMode.HALF_UP)
+
     private fun ExifSubIFDDirectory.getTv() = getString(33434)
-    private fun ExifSubIFDDirectory.getTvAsBigDecimal() = BigDecimal(getRational(33434).toDouble()).setScale(6, RoundingMode.HALF_UP)
+    private fun ExifSubIFDDirectory.getTvAsBigDecimal() =
+        BigDecimal(getRational(33434).toDouble()).setScale(6, RoundingMode.HALF_UP)
+
     private fun ExifSubIFDDirectory.getFocalLength() = Math.round(getRational(37386).toFloat())
     private fun ExifSubIFDDirectory.getLensModel() = getString(42036)
 
