@@ -17,6 +17,6 @@ CREATE TABLE Image (
   tv          TEXT    NOT NULL,
   tv_real     REAL    NOT NULL,
   lens        TEXT,
-  captureDate REAL    NOT NULL,
+  captureDate TEXT    NOT NULL,
   UNIQUE (fileName, captureDate)
 );

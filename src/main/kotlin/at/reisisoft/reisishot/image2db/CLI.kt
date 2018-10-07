@@ -8,6 +8,9 @@ import java.io.StringWriter
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.sql.Date
+import java.sql.PreparedStatement
+import java.text.SimpleDateFormat
 import java.util.*
 
 internal enum class Mode {
@@ -58,6 +61,14 @@ object CLI {
         }.default(Properties())
     }
 
+    private val dateToStringConverter by lazy {
+        SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S")
+    }
+
+    private fun PreparedStatement.setSQLiteDate(parameterIndex: Int, date: Date) {
+        setString(parameterIndex, dateToStringConverter.format(date))
+    }
+
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -89,7 +100,7 @@ object CLI {
                                 persistImage.setString(7, image.tv)
                                 persistImage.setBigDecimal(8, image.tvReal)
                                 persistImage.setString(9, image.lens)
-                                persistImage.setDate(10, image.date)
+                                persistImage.setSQLiteDate(10, image.date)
                                 persistImage.setInt(11, image.focalLength)
                                 persistImage.addBatch()
                                 image

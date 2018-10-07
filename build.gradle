@@ -36,7 +36,7 @@ applicationDefaultJvmArgs = ["-ea", "-Xss1024m", "-Xmx8g"]
 
 dependencies {
     //SQLite
-    compile group: "org.xerial", name: "sqlite-jdbc", version: "3.20+"
+    compile group: "org.xerial", name: "sqlite-jdbc", version: "3.8.11.2"
     // Kotlin Argparer
     compile group: "com.xenomachina", name: "kotlin-argparser", version: "2.0+"
     // https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
