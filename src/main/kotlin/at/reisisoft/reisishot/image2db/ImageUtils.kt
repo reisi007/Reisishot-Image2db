@@ -115,6 +115,10 @@ object ImageUtils {
         BigDecimal(getRational(33434).toDouble()).setScale(6, RoundingMode.HALF_UP)
 
     private fun ExifSubIFDDirectory.getFocalLength() = Math.round(getRational(37386).toFloat())
-    private fun ExifSubIFDDirectory.getLensModel() = getString(42036)
+    private fun ExifSubIFDDirectory.getLensModel() = getString(42036)?.let {
+        if (it.isBlank())
+            return@let "${getFocalLength()} mm"
+        return@let it
+    }
 
 }
