@@ -20,8 +20,8 @@ object DataBaseUtils {
 
         Files.deleteIfExists(path)
 
-        useDatabase(path) {
-            it.createStatement().use { statement ->
+        useDatabase(path) { con ->
+            con.createStatement().use { statement ->
                 val tableCount =
                     statements.stream().sequential().filter { !it.isBlank() }.peek { statement.addBatch(it) }.count()
                 statement.executeBatch()
@@ -37,8 +37,8 @@ object DataBaseUtils {
         val sql = "SELECT id, manufacturer,model,cropfactor FROM Camera"
         val set = DbCameraSet()
 
-        connection.createStatement().use {
-            it.executeQuery(sql).use {
+        connection.createStatement().use { statement ->
+            statement.executeQuery(sql).use {
                 while (it.next())
                     set += DbCamera(
                         it.getInt(1), it.getString(2),

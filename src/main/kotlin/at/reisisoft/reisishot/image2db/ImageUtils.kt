@@ -13,12 +13,18 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
+import java.sql.Connection
 import java.util.*
 
 
 object ImageUtils {
 
-    fun findImages(path: Path, cameraModels: DbCameraSet): NavigableSet<DbImage> {
+    fun findImages(
+        path: Path,
+        cameraModels: DbCameraSet,
+        connection: Connection,
+        cameraProperties: Properties
+    ): NavigableSet<DbImage> {
         println("Looking for images!")
         val fileVisitor = object : SimpleFileVisitor<Path>() {
 
@@ -33,7 +39,7 @@ object ImageUtils {
 
             override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
                 if (file.fileName.toString().toLowerCase().let { it.endsWith(".jpeg") || it.endsWith(".jpg") })
-                    processImageFile(file, cameraModels)?.let {
+                    processImageFile(file, cameraModels, connection, cameraProperties)?.let {
                         println("Processed ${path.relativize(file)} successfully!")
                         imageList += it
                     } ?: kotlin.run { println("Error while processing ${path.relativize(file)}!") }
@@ -55,21 +61,30 @@ object ImageUtils {
         return fileVisitor.imageList
     }
 
-    private fun processImageFile(imageFile: Path, cameraModels: DbCameraSet): DbImage? =
+    private fun processImageFile(
+        imageFile: Path,
+        cameraModels: DbCameraSet,
+        connection: Connection,
+        cameraProperties: Properties
+    ): DbImage? =
         ImageMetadataReader.readMetadata(imageFile.toFile()).let { metadata ->
             metadata.getFirstDirectoryOfType(JpegDirectory::class.java).let { jpegDirectory ->
                 metadata.getFirstDirectoryOfType(ExifIFD0Directory::class.java).let { exifIfd0Directory ->
                     metadata.getFirstDirectoryOfType(ExifSubIFDDirectory::class.java).let { exifSubIfdDirectory ->
                         metadata.getFirstDirectoryOfType(FileSystemDirectory::class.java).let { fileSystemDirectory ->
                             try {
+                                val camera = cameraModels.getOrCreateCamera(
+                                    exifIfd0Directory.getMake(),
+                                    exifIfd0Directory.getModel(),
+                                    connection,
+                                    cameraProperties
+
+                                )
                                 return DbImage(
                                     fileSystemDirectory.getFileName(),
                                     jpegDirectory.imageHeight,
                                     jpegDirectory.imageWidth,
-                                    cameraModels.getOrCreateCamera(
-                                        exifIfd0Directory.getMake(),
-                                        exifIfd0Directory.getModel()
-                                    ),
+                                    camera,
                                     exifSubIfdDirectory.getIso(),
                                     exifSubIfdDirectory.getAv(),
                                     exifSubIfdDirectory.getTv(),

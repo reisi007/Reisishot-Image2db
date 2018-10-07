@@ -1,0 +1,49 @@
+buildscript {
+    ext.kotlin_version = "1.2.71"
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+
+}
+
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+
+group 'at.reisisoft'
+version '1.0.1-SNAPSHOT'
+
+
+
+repositories {
+    mavenCentral()
+    maven {
+        setUrl("https://dl.bintray.com/xenomachina/maven/")
+    }
+}
+
+
+mainClassName = "at.reisisoft.reisishot.image2db.CLI"
+applicationName = "Reisishot Image 2 DB"
+applicationDefaultJvmArgs = ["-ea", "-Xss1024m", "-Xmx8g"]
+
+
+dependencies {
+    //SQLite
+    compile group: "org.xerial", name: "sqlite-jdbc", version: "3.20+"
+    // Kotlin Argparer
+    compile group: "com.xenomachina", name: "kotlin-argparser", version: "2.0+"
+    // https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
+    compile group: "com.drewnoakes", name: "metadata-extractor", version: "2.11+"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
