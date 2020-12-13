@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Images to DB -- Create all years" type="JetRunConfigurationType" singleton="true">
+    <module name="reisishot-image2db.main" />
+    <option name="VM_PARAMETERS" value="-ea -Xss1024m -Xmx8g" />
+    <option name="PROGRAM_PARAMETERS" value="--create --path &quot;D:\_Files\Amazon Drive\Pictures\2019&quot; --path &quot;D:\_Files\Amazon Drive\Pictures\2018&quot; --path &quot;D:\_Files\Amazon Drive\Pictures\2017&quot; --db &quot;T:\images2018.sqlite&quot; --predefinedCameras &quot;D:\Github\reisishot-image2db\camera.properties&quot;" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="PASS_PARENT_ENVS" value="true" />
+    <option name="MAIN_CLASS_NAME" value="at.reisisoft.reisishot.image2db.CLI" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
