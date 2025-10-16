@@ -15,6 +15,7 @@ import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
 import java.sql.Connection
 import java.util.*
+import java.util.Locale.getDefault
 
 
 object ImageUtils {
@@ -38,7 +39,9 @@ object ImageUtils {
             }
 
             override fun visitFile(file: Path, attrs: BasicFileAttributes): FileVisitResult {
-                if (file.fileName.toString().toLowerCase().let { it.endsWith(".jpeg") || it.endsWith(".jpg") })
+                if (file.fileName.toString().lowercase(getDefault())
+                        .let { it.endsWith(".jpeg") || it.endsWith(".jpg") }
+                )
                     processImageFile(file, cameraModels, connection, cameraProperties)?.let {
                         println("Processed ${path.relativize(file)} successfully!")
                         imageList += it
@@ -116,9 +119,10 @@ object ImageUtils {
 
     private fun ExifSubIFDDirectory.getFocalLength() = Math.round(getRational(37386).toFloat())
     private fun ExifSubIFDDirectory.getLensModel() = getString(42036)?.let {
-        if (it.isBlank())
-            return@let "${getFocalLength()} mm"
-        return@let it
+        val replace = it.ifBlank { "${getFocalLength()}mm" }.replace(".0", "").replace(" mm", "mm")
+        if (replace == "105mm") return@let "Sigma MAKRO 105mm F2,8 EX DG OS HSM"
+        if (replace == "147mm") return@let "Sigma MAKRO 105mm F2,8 EX DG OS HSM + 1.4x Telekonverter"
+        return@let replace
     }
 
 }

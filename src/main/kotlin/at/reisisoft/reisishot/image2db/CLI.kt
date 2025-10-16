@@ -12,12 +12,14 @@ import java.sql.Date
 import java.sql.PreparedStatement
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Locale
+import java.util.Locale.getDefault
 
 internal enum class Mode {
     CREATE, UPDATE;
 
     override fun toString(): String {
-        return "--${super.toString().toLowerCase()}"
+        return "--${super.toString().lowercase(getDefault())}"
     }
 }
 

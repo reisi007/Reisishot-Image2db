@@ -10,8 +10,6 @@ import java.sql.DriverManager
 object DataBaseUtils {
 
     fun createDatabase(path: Path) {
-
-
         val sqlDdlText =
             BufferedReader(InputStreamReader(javaClass.getResourceAsStream("/createDb.ddl.sql"))).useLines {
                 it.joinToString(" ")

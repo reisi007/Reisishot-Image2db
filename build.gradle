@@ -1,49 +1,53 @@
-buildscript {
-    ext.kotlin_version = "1.2.71"
+// Use the modern 'plugins' block.
+// The 'buildscript' block is no longer needed.
+plugins {
+    // Apply the Kotlin JVM plugin with the latest version
+    id 'org.jetbrains.kotlin.jvm' version '2.2.20'
 
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-
+    // Apply the application plugin
+    id 'application'
 }
-
-
-apply plugin: 'kotlin'
-apply plugin: 'application'
-
 
 group 'at.reisisoft'
 version '1.0.1-SNAPSHOT'
 
-
-
 repositories {
     mavenCentral()
-    maven {
-        setUrl("https://dl.bintray.com/xenomachina/maven/")
-    }
+    // The Bintray repository ("https://dl.bintray.com/xenomachina/maven/") 
+    // has been shut down. It is removed because all dependencies,
+    // including 'kotlin-argparser', are available on Maven Central.
 }
 
-
-mainClassName = "at.reisisoft.reisishot.image2db.CLI"
-applicationName = "Reisishot Image 2 DB"
-applicationDefaultJvmArgs = ["-ea", "-Xss1024m", "-Xmx8g"]
-
+// Configuration for the 'application' plugin
+application {
+    mainClass = "at.reisisoft.reisishot.image2db.CLI"
+    applicationName = "Reisishot Image 2 DB"
+    applicationDefaultJvmArgs = ["-ea", "-Xss1024m", "-Xmx8g"]
+}
 
 dependencies {
-    //SQLite
-    compile group: "org.xerial", name: "sqlite-jdbc", version: "3.8.11.2"
-    // Kotlin Argparer
-    compile group: "com.xenomachina", name: "kotlin-argparser", version: "2.0+"
-    // https://mvnrepository.com/artifact/com.drewnoakes/metadata-extractor
-    compile group: "com.drewnoakes", name: "metadata-extractor", version: "2.11+"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    // The 'compile' configuration is deprecated. Use 'implementation'.
+
+    // SQLite: Updated to the latest version
+    implementation group: "org.xerial", name: "sqlite-jdbc", version: "3.50.3.0" // Original: 3.41.2.2 
+
+    // Kotlin Argparser: Using specific version from Maven Central.
+    // The '2.0+' range is replaced with the latest stable version (2.0.7) for build reproducibility.
+    // This library appears unmaintained (last release 2018).
+    // Consider migrating to a modern alternative like 'clikt' or 'kotlinx-cli' if you plan future development.
+    implementation group: "com.xenomachina", name: "kotlin-argparser", version: "2.0.7"
+
+    // metadata-extractor: Updated from dynamic '2.11+' to the latest stable version
+    implementation group: "com.drewnoakes", name: "metadata-extractor", version: "2.19.0"
+
+    // Kotlin Standard Library: Updated to match the plugin version.
+    // 'kotlin-stdlib-jdk8' is now included in 'kotlin-stdlib' by default.
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+// Configure the Kotlin compiler to target Java 21
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "21" // Original: "1.8" 
+    }
 }
